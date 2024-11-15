@@ -1,16 +1,16 @@
 ---
 name: User story template API
 about: Custom template for project user stories
-title: ''
-labels: ''
+title: 'USER STORY: '
+labels: Must have
 assignees: behemot-biz
 
 ---
 
 As a **role** I can **capability** so that **received benefit**
 
-- AC 1
+- AC1: 
 
-- AC 2
+- AC2: 
 
-- AC 3
+- AC3:
