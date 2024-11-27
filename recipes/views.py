@@ -1,82 +1,35 @@
-from rest_framework import status, permissions
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from .models import Recipe, Measurement, Ingredient, RecipeIngredient
+
+from rest_framework import generics, permissions
+from .models import Recipe, RecipeIngredient
 from .serializers import RecipeSerializer, RecipeIngredientSerializer
-# , IngredientSerializer, MeasurementSerializer
 from tt_drf_api.permissions import IsOwnerOrReadOnly
 
 
-class RecipeList(APIView):
-    """
-    API view to retrieve all recipes.
-    """
+class RecipeList(generics.ListCreateAPIView):
     serializer_class = RecipeSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Recipe.objects.all()
 
-    def get(self, request):
-        recipes = Recipe.objects.all()
-        serializer = RecipeSerializer(
-            recipes, many=True, context={'request': request}
-        )
-        return Response(serializer.data)
-    
-    def post(self, request):
-        serializer = RecipeSerializer(
-            data=request.data, context={'request': request}
-        )
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(
-                serializer.data, status=status.HTTP_201_CREATED
-            )
-        return Response(
-            serializer.errors, status=status.HTTP_400_BAD_REQUEST
-        )
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
-class RecipeIngredientListView(APIView):
-    """
-    API view to retrieve all recipe ingredients, 
-    optionally filtered by recipe.
-    """
+class RecipeDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = RecipeSerializer
+    permission_classes = [IsOwnerOrReadOnly]
+    queryset = Recipe.objects.all()
+
+
+class RecipeIngredientList(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = RecipeIngredientSerializer
+    queryset = RecipeIngredient.objects.all()
 
-    def get(self, request):
-        recipe_id = request.query_params.get('recipe', None)
-        if recipe_id:
-            recipe_ingredients = RecipeIngredient.objects.filter(
-                recipe_id=recipe_id
-                )
-        else:
-            recipe_ingredients = RecipeIngredient.objects.all()
-        serializer = RecipeIngredientSerializer(recipe_ingredients, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
-    def post(self, request):
-        serializer = RecipeIngredientSerializer(data=request.data)
-        if serializer.is_valid():
-            recipe_id = serializer.validated_data['recipe'].id
-            ingredient_name = serializer.validated_data['ingredient']
-            quantity = serializer.validated_data['quantity']
-            measure_name = serializer.validated_data['measure']
 
-            try:
-                recipe = Recipe.objects.get(id=recipe_id)
-            except Recipe.DoesNotExist:
-                return Response({"error": "Recipe not found"}, status=status.HTTP_404_NOT_FOUND)
-            
-            ingredient, _ = Ingredient.objects.get_or_create(name=ingredient_name)
-            measure, _ = Measurement.objects.get_or_create(measure=measure_name)
-
-            recipe_ingredient = RecipeIngredient.objects.create(
-                recipe=recipe,
-                ingredient=ingredient,
-                quantity=quantity,
-                measure=measure
-            )
-
-            return Response(
-                RecipeIngredientSerializer(recipe_ingredient).data,
-                status=status.HTTP_201_CREATED
-            )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class RecipeIngredientDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = RecipeIngredientSerializer
+    permission_classes = [IsOwnerOrReadOnly]
+    queryset = RecipeIngredient.objects.all()
