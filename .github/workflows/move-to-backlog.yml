@@ -1,0 +1,17 @@
+name: Move Issues to Backlog
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  move-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Move issue to Backlog
+        uses: actions/gh-projects@v2
+        with:
+          project_url: https://github.com/users/behemot-biz/projects/5
+          column_name: Backlog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
