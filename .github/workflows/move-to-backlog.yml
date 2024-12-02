@@ -11,7 +11,7 @@ jobs:
       - name: Move issue to Backlog
         uses: actions/gh-projects@v2
         with:
-          project_url: https://github.com/users/behemot-biz/projects/5
+          project_url: https://github.com/users/behemot-biz/projects/5/views/1
           column_name: Backlog
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
