@@ -2,8 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from recipes.models import Recipe
 
+
 class Like(models.Model):
-    owner  = models.ForeignKey(
+    owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE
         )
