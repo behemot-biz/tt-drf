@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Recipe, Measurement, Ingredient, RecipeIngredient
-
+from likes.models import Like
 
 class MeasurementSerializer(serializers.ModelSerializer):
     """
@@ -190,6 +190,9 @@ class RecipeSerializer(serializers.ModelSerializer):
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     recipe_ingredients = RecipeIngredientSerializer(many=True, read_only=True)
+    like_id = serializers.SerializerMethodField()
+    likes_count = serializers.ReadOnlyField()
+    comments_count = serializers.ReadOnlyField()
 
     def validate_image(self, value):
         """
@@ -232,10 +235,20 @@ class RecipeSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user == obj.owner
 
+    def get_like_id(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            like = Like.objects.filter(
+                owner=user, recipe=obj
+            ).first()
+            return like.id if like else None
+        return None
+
     class Meta:
         model = Recipe
         fields = [
-            'id', 'recipe_name', 'image', 'intro', 'instruction', 'owner',
+            'id', 'recipe_name', 'image', 'intro', 'instruction','owner', 
             'profile_id', 'profile_image', 'recipe_ingredients',
-            'created_at', 'updated_at', 'is_owner'
+            'created_at', 'updated_at', 'is_owner', 'like_id',
+            'likes_count', 'comments_count',
         ]
