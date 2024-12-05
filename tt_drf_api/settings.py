@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import re
 from pathlib import Path
 import os
 import dj_database_url
@@ -57,7 +58,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = 'DEV' in os.environ
 
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1' , 'tastytales.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1' , os.environ.get('ALLOWED_HOST')]
 
 # Application definition
 
@@ -105,10 +106,11 @@ if 'CLIENT_ORIGIN' in os.environ:
      CORS_ALLOWED_ORIGINS = [
          os.environ.get('CLIENT_ORIGIN')
      ]
-else:
-     CORS_ALLOWED_ORIGIN_REGEXES = [
-        r"^http:\/\/(?:.*\.)?localhost\:3000$"
-     ]
+
+if 'CLIENT_ORIGIN_DEV' in os.environ:
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+         r"^http:\/\/(?:.*\.)?localhost\:3000$"
+    ]
 
 CORS_ALLOW_CREDENTIALS = True
 
