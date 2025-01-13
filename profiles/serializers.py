@@ -2,33 +2,21 @@ from rest_framework import serializers
 from .models import Profile
 from followers.models import Follower
 
+"""
+Serializers for the Profiles app.
+
+This module defines the ProfileSerializer, which is responsible for
+serializing and deserializing Profile data. The serializer includes additional
+fields for computed properties, such as counts for recipes, followers, and
+following, as well as flags for ownership and following relationships.
+
+Classes:
+    - ProfileSerializer: Serializes Profile model data, including related
+      metadata such as ownership status, following status, and aggregate counts.
+"""
+
 
 class ProfileSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the Profile model.
-
-    This serializer provides:
-        - Basic profile details such as `name`, `content`, and `image`.
-        - Ownership information (`is_owner`) to determine if the current user
-            owns the profile.
-        - Follow status (`following_id`), which indicates if the current user
-            is following this profile.
-        - Aggregated counts for:
-            - `recipes_count`: The number of recipes created by profile owner.
-            - `followers_count`: The number of users following profile owner.
-            - `following_count`: The number of users  profile owner follows.
-
-    Methods:
-        - `get_is_owner`:
-            Determines if profile belongs to the currently authenticated user.
-        - `get_following_id`:
-            Retrieves the ID of the `Follower` relationship if the current
-            user follows the profile owner.
-
-    Attributes:
-        - `model`: Specifies the Profile model being serialized.
-        - `fields`: Defines fields exposed in the serialized representation.
-    """
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
     following_id = serializers.SerializerMethodField()

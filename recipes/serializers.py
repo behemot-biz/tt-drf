@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Recipe, Measurement, Ingredient, RecipeIngredient
 from likes.models import Like
 
+
 class MeasurementSerializer(serializers.ModelSerializer):
     """
     Serializer for the Measurement model.
@@ -173,8 +174,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         - `instruction`: Detailed instructions for the recipe.
         - `owner`: Username of the recipe owner.
         - `profile_id`: ID of the owner's profile (for frontend linking).
-        - `profile_image`: URL of the owner's profile image.
+        # - `profile_image`: URL of the owner's profile image.
         - `recipe_ingredients`: Nested list of associated ingredients.
+        - `status`: Recipe status, default value is pending_publish.
         - `created_at`: Timestamp for when the recipe was created.
         - `updated_at`: Timestamp for when the recipe was last updated.
         - `is_owner`: Indicates if the logged-in user owns the recipe.
@@ -188,11 +190,19 @@ class RecipeSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
-    profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     recipe_ingredients = RecipeIngredientSerializer(many=True, read_only=True)
     like_id = serializers.SerializerMethodField()
     likes_count = serializers.ReadOnlyField()
     comments_count = serializers.ReadOnlyField()
+
+    status = serializers.ChoiceField(  # Add status field
+        choices=[
+            ("pending_publish", "Pending Publish"),
+            ("published", "Published"),
+            ("pending_delete", "Pending Delete"),
+        ],
+        required=False,
+    )
 
     def validate_image(self, value):
         """
@@ -247,8 +257,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = [
-            'id', 'recipe_name', 'image', 'intro', 'instruction','owner', 
-            'profile_id', 'profile_image', 'recipe_ingredients',
+            'id', 'recipe_name', 'image', 'intro', 'instruction',
+            'owner', 'profile_id', 'recipe_ingredients',
             'created_at', 'updated_at', 'is_owner', 'like_id',
-            'likes_count', 'comments_count',
+            'likes_count', 'comments_count', 'status',
         ]
