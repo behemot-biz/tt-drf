@@ -174,7 +174,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         - `instruction`: Detailed instructions for the recipe.
         - `owner`: Username of the recipe owner.
         - `profile_id`: ID of the owner's profile (for frontend linking).
-        # - `profile_image`: URL of the owner's profile image.
+        - `profile_image`: URL of the owner's profile image.
         - `recipe_ingredients`: Nested list of associated ingredients.
         - `status`: Recipe status, default value is pending_publish.
         - `created_at`: Timestamp for when the recipe was created.
@@ -190,6 +190,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
+    profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     recipe_ingredients = RecipeIngredientSerializer(many=True, read_only=True)
     like_id = serializers.SerializerMethodField()
     likes_count = serializers.ReadOnlyField()
