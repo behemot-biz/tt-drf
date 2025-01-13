@@ -5,6 +5,22 @@ from tt_drf_api.permissions import IsOwnerOrReadOnly
 from .models import Profile
 from .serializers import ProfileSerializer
 
+"""
+Views for the Profiles app.
+
+This module provides API views for managing user profiles. It allows users
+to retrieve a list of profiles, view detailed information about a specific
+profile, and update their own profile. The views include support for filtering,
+ordering, and permissions to ensure secure access control.
+
+Classes:
+    - ProfileList: Provides a list of user profiles, including aggregated
+      counts for recipes, followers, and following. Supports filtering and
+      ordering by various profile attributes.
+    - ProfileDetail: Allows retrieval and updating of a specific profile.
+      Updates are restricted to the profile owner via permissions.
+"""
+
 
 class ProfileList(generics.ListAPIView):
     """
