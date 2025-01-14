@@ -38,7 +38,6 @@ class RecipeList(generics.ListCreateAPIView):
         DjangoFilterBackend,
     ]
     filterset_fields = [
-        'status',  # Add status as a filterable field
         'owner__followed__owner__profile',
         'likes__owner__profile',
         'owner__profile',
@@ -58,17 +57,26 @@ class RecipeList(generics.ListCreateAPIView):
         """
         Return recipes based on query parameters.
         """
+        user = self.request.user
+
         queryset = Recipe.objects.annotate(
             likes_count=Count('likes', distinct=True),
             comments_count=Count('comment', distinct=True)
         ).order_by('-created_at')
 
-        status_filter = self.request.query_params.getlist('status')  # Fetch as list
-        if status_filter:
-            queryset = queryset.filter(status__in=status_filter)  # Use __in for multiple values
+        # Fetch 'status' from query parameters
+        status_filter = self.request.query_params.getlist('status')
 
-        # Otherwise, default to showing only published recipes
+        if user.is_authenticated:
+            if status_filter:
+                # Only logged-in user's recipes with specific statuses
+                queryset = queryset.filter(
+                    status__in=status_filter, owner=user)
+            else:
+                # Default to showing logged-in user's recipes only
+                queryset = queryset.filter(owner=user)
         else:
+            # Show only published recipes for unauthenticated users
             queryset = queryset.filter(status='published')
 
         return queryset
