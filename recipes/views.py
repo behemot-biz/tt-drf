@@ -63,10 +63,9 @@ class RecipeList(generics.ListCreateAPIView):
             comments_count=Count('comment', distinct=True)
         ).order_by('-created_at')
 
-        # Respect the 'status' query parameter if provided
-        status_filter = self.request.query_params.get('status')
+        status_filter = self.request.query_params.getlist('status')  # Fetch as list
         if status_filter:
-            queryset = queryset.filter(status=status_filter)
+            queryset = queryset.filter(status__in=status_filter)  # Use __in for multiple values
 
         # Otherwise, default to showing only published recipes
         else:
