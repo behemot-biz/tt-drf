@@ -58,25 +58,27 @@ class RecipeList(generics.ListCreateAPIView):
         Return recipes based on query parameters.
         """
         user = self.request.user
-
         queryset = Recipe.objects.annotate(
             likes_count=Count('likes', distinct=True),
             comments_count=Count('comment', distinct=True)
         ).order_by('-created_at')
 
-        # Fetch 'status' from query parameters
+        # Parse the 'status' query parameter
         status_filter = self.request.query_params.getlist('status')
 
-        if user.is_authenticated:
-            if status_filter:
-                # Only logged-in user's recipes with specific statuses
+        if status_filter:
+            if user.is_authenticated:
+                # Restrict results to logged-in user's recipes or published
+                # recipes as per the status filter
                 queryset = queryset.filter(
-                    status__in=status_filter, owner=user)
+                    Q(status__in=status_filter) &
+                    (Q(owner=user) | Q(status='published'))
+                )
             else:
-                # Default to showing logged-in user's recipes only
-                queryset = queryset.filter(owner=user)
+                # Restrict to only published recipes for anonymous users
+                queryset = queryset.filter(status='published')
         else:
-            # Show only published recipes for unauthenticated users
+            # Default: Show only published recipes
             queryset = queryset.filter(status='published')
 
         return queryset
@@ -88,11 +90,6 @@ class RecipeList(generics.ListCreateAPIView):
 class RecipeDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-
-    # queryset = Recipe.objects.annotate(
-    #     likes_count=Count('likes', distinct=True),
-    #     comments_count=Count('comment', distinct=True)
-    # ).order_by('created_at')
 
     def get_queryset(self):
         """
