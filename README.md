@@ -24,7 +24,9 @@ The TastyTales API serves as the backend service for the TastyTales application,
 
 This is the API for the TastyTales backend application. It manages user authentication, recipe management, and user interactions such as comments, likes, and followers.
 
-- The TastyTales [frontend repository](#https://github.com/behemot-biz/tastytales).
+- [Frontend repository](#https://github.com/behemot-biz/tastytales).
+- [Live frontend site](#https://tastytales-83bed5f61a06.herokuapp.com).
+- [Live API](#https://tastytales-api-56d55ea68c61.herokuapp.com).
 
 
 ## Database Design
@@ -149,19 +151,24 @@ TastyTales uses SQLite for development and PostgreSQL for production, ensuring a
 
 ## Technologies
 
-<details>
-<summary>Language</summary>
+
+**Language:**
 - [Python](https://www.python.org/)
-</details>
 
 
-<details>
-<summary>Frameworks and Libraries</summary>
+**Web tools:**
+- [GitHub](https://github.com) (repository)
+- [Heroku platform](https://www.heroku.com/) (deployment platform)
+- [CI Python Linter](https://pep8ci.herokuapp.com/#) (Python code validation)
+
+
+**Frameworks and Libraries:**
 - [Django](https://www.djangoproject.com/)
 - [Django REST Framework](https://www.django-rest-framework.org/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [Cloudinary](https://cloudinary.com/)
-</details>
+- [Dillinger](https://dillinger.io) (Readme editor)
+
 
 ### Libraries Used
 The TastyTales application uses several external libraries. Below is a list of these libraries along with a breif description and instructions on how to install them.
