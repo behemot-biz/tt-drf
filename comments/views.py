@@ -6,6 +6,13 @@ from .serializers import CommentSerializer, CommentDetailSerializer
 
 
 class CommentList(generics.ListCreateAPIView):
+    """
+    API view to retrieve a list of comments or create a new comment.
+
+    - Allows authenticated users to create comments.
+    - Anyone can view the list of comments.
+    - Filters comments by associated recipe using query parameters.
+    """
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Comment.objects.all()
@@ -17,6 +24,13 @@ class CommentList(generics.ListCreateAPIView):
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    API view to retrieve, update, or delete a specific comment.
+
+    - Allows the owner of the comment to update or delete it.
+    - Anyone can view the comment.
+    - Ensures object-level permissions using the IsOwnerOrReadOnly permission.
+    """
     permission_classes = [IsOwnerOrReadOnly]
     serializer_class = CommentDetailSerializer
     queryset = Comment.objects.all()
