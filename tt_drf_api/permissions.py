@@ -13,7 +13,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
         if hasattr(obj, 'owner'):  # Direct ownership
             return obj.owner == request.user
-        elif hasattr(obj, 'recipe') and hasattr(obj.recipe, 'owner'):  # Ownership via Recipe
+        elif hasattr(obj, 'recipe') and hasattr(obj.recipe, 'owner'):
             return obj.recipe.owner == request.user
 
         return False

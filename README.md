@@ -474,7 +474,42 @@ The TastyTales application uses several external libraries. Below is a list of t
 
 Testing information and issues encountered during development are tracked and documented in the respective repositories.
 
-[See User Stories in TEST.md](https://github.com/behemot-biz/tastytales/blob/main/TEST.md#tastytales-api)
+[See the full test documentation -  TEST.md](https://github.com/behemot-biz/tastytales/blob/main/TEST.md#tastytales-api)
+
+### Bugs and Fixes Log
+
+#### **1. Bug: Recipe Visibility Issues**
+- **Description**: Anonymous users were able to see private recipes, and logged-in users faced issues viewing their draft recipes (`pending_publish` and `pending_delete` statuses).
+- **Fix**:
+  - Enhanced the `get_queryset` logic in the `RecipeList` view:
+    - Anonymous users now only see recipes with `status='published'`.
+    - Logged-in users can view their own draft recipes (`pending_publish` and `pending_delete`) along with all published recipes.
+  - Introduced explicit handling of `status` query parameters to properly filter results based on authentication.
+  - Verified changes via DRF UI and Postman for both authenticated and unauthenticated scenarios.
+
+
+#### **2. Bug: Missing `profile_image` in Recipes**
+- **Description**: The `profile_image` field was removed from `RecipeSerializer`, which caused avatar images linked to recipes to break.
+- **Fix**:
+  - Reintroduced the `profile_image` field in the `RecipeSerializer` to restore the correct avatar image functionality.
+
+
+#### **3. Bug: Comments List Page Error**
+- **Description**: The `Comments list` page encountered an error due to an incorrect value in `filterset_fields`. The field was mistakenly set to `['recipes']` instead of `['recipe']`.
+- **Fix**:
+  - Corrected the `filterset_fields` value to `['recipe']`, resolving the error.
+
+#### **4. Bug: Missing Logout URL Pattern**
+- **Description**: The logout route was not properly configured in the `tt_drf_api` URL patterns, causing logout functionality to fail.
+- **Fix**:
+  - Added the missing logout URL pattern to the `tt_drf_api` configuration.
+
+
+### Overall Improvements
+- These fixes ensure better user experience by:
+  - Restricting access to private recipes for unauthorized users.
+  - Restoring broken avatar image links.
+  - Addressing critical issues like incorrect filters and missing logout functionality.
 
 
 ## Deployment
