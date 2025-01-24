@@ -56,11 +56,11 @@ The TastyTales API serves as the backend service for the TastyTales React applic
 
 This is the API for the TastyTales backend application. It manages user authentication, recipe management, and user interactions such as comments, likes, and followers.
 
-- [Frontend repository](#https://github.com/behemot-biz/tastytales).
+- [Frontend repository](https://github.com/behemot-biz/tastytales).
 
-- [Live frontend site](#https://tastytales-83bed5f61a06.herokuapp.com).
+- [Live frontend site](https://tastytales-83bed5f61a06.herokuapp.com).
 
-- [Live API](#https://tastytales-api-56d55ea68c61.herokuapp.com).
+- [Live API](https://tastytales-api-56d55ea68c61.herokuapp.com).
 
 
 ## Agile Development
